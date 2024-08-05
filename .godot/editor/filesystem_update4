@@ -1,2 +1,6 @@
 res://CardBase.tscn
 res://board.tscn
+res://Card.gd
+res://board.gd
+res://global/game.gd
+res://Field.gd

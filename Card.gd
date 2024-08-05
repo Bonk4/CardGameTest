@@ -19,6 +19,9 @@ var ranks = [
 
 @export var held = false;
 @export var ghost = false;
+var onBoard = false;
+var hoverField = false;
+var faceUp = true;
 
 @export_category("card-data")
 @export var rank = "2";
@@ -35,7 +38,9 @@ func _on_ready():
 	suit = newSuit;
 	rank = newRank.name;
 	score = newRank.value;
+	
 	setCardDisplay();
+	$Body/Anim.play("spawn");
 
 func _process(delta):
 	if(held):
@@ -47,51 +52,47 @@ func _process(delta):
 		rotation = lerp_angle(rotation, towardsMouse, 10 * delta)
 		
 		var newPos = Vector2(
-			mouse.x - width_offset, 
+			mouse.x - width_offset,
 			mouse.y - width_offset
 		);
-		global_position = lerp(global_position, newPos, 10 * delta);
+		global_position = lerp(global_position, newPos, 15 * delta);
 
 func _on_gui_input(event):
 	if (event is InputEventMouseButton && event.pressed):
-		if(!held):
+		if(!held && !onBoard):
 			held = true;
+			Game.holdCard(self);
 	if (event is InputEventMouseButton && !event.pressed):
-		print("checkDestination")
-		Game.checkDestination(self);
+		Game.tryTakeTurn(self);
+		$Body/Anim.play("idle");
 		held = false;
 
 func _on_mouse_entered():
-	if(!Game.cardHeld):
+	if(!onBoard):
 		$Body/Anim.play("select");
 
 func _on_mouse_exited():
-	if(!Game.cardHeld):
+	if(!onBoard):
 		$Body/Anim.play("deselect");
 
-
 func setCard(newCard):
-	print("setCard");
 	suit = newCard.suit;
 	rank = newCard.rank;
 	score = newCard.score;
 	setCardDisplay();
 	
 func getCard():
-	return { 
-		"suit": suit, 
-		"rank": rank, 
-		"score": score 
+	return {
+		"suit": suit,
+		"rank": rank,
+		"score": score
 	};
 
 func setCardDisplay():
-	$Body/CardFront/Rank.text = rank;
-	$Body/CardFront/Suit.frame = getFrame(suit);
-	$Body/CardFront/SuitTxt.text = getCode(suit);
-
-func showGhost(show):
-	$Body/CardFront.visible = !show;
-	$Body/GhostFront.visible = show;
+	var displayFormat = "[center]{cardRank}{suitCode}[/center]";
+	$Body/CardFront/Rank.text = displayFormat.format(
+		{"cardRank": rank, "suitCode": getCode(suit)}
+	);
 	
 func getFrame(suit):
 	match suit:
@@ -109,8 +110,41 @@ func getCode(suit):
 		"clubs":
 			return "\u2667";
 		"hearts":
-			return "\u2665";
+			return "\u2662";
 		"diamonds":
-			return "\u2666";
+			return "\u2663";
 		"spades":
 			return "\u2664";
+
+func hoverPlay():
+	$Body/Anim.play("hoverPlay");
+	
+func unhover():
+	$Body/Anim.play("idle");
+	
+func flip():
+	if(faceUp):
+		faceUp = false
+		$Body/Anim.play("flipDown")
+	else:
+		faceUp = true
+		$Body/Anim.play("flipUp")
+
+func setFaceDown():
+	faceUp = false
+	$Body/CardFront/Rank.visible = false
+	$Body/CardFront/CardBack.visible = true
+
+func setFaceUp():
+	faceUp = true
+	$Body/CardFront/Rank.visible = true
+	$Body/CardFront/CardBack.visible = false
+	
+func despawn():
+	$Body/Anim.play("despawn");
+
+func _on_anim_animation_finished(anim_name):
+	if (anim_name == "flipUp"):
+		Game.signalCardRevealed()
+	if (anim_name == "despawn"):
+		self.queue_free()

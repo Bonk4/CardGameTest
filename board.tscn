@@ -1,73 +1,80 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccusg8tgxly5q"]
+[gd_scene load_steps=6 format=3 uid="uid://ccusg8tgxly5q"]
 
 [ext_resource type="Script" path="res://board.gd" id="1_5fsv0"]
-[ext_resource type="Script" path="res://Field.gd" id="2_yl3le"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pi5ge"]
-size = Vector2(116, 170)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbewe"]
-size = Vector2(128, 177)
+size = Vector2(425, 192)
+
+[sub_resource type="Animation" id="Animation_ur32b"]
+resource_name = "showResult"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ResultDisplay:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.779103),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_p2a6s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ResultDisplay:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8h3c7"]
+_data = {
+"RESET": SubResource("Animation_p2a6s"),
+"showResult": SubResource("Animation_ur32b")
+}
 
 [node name="Board" type="Node2D"]
 script = ExtResource("1_5fsv0")
 
-[node name="Button" type="Button" parent="."]
-offset_left = 272.0
-offset_top = 672.0
-offset_right = 368.0
-offset_bottom = 727.0
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_font_sizes/font_size = 34
-text = "Draw"
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
-[node name="TrashRef" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(150, 200)
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 120.0
-offset_top = 376.0
-offset_right = 270.0
-offset_bottom = 576.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.37362, 0.117808, 0.0543879, 1)
-
-[node name="Body" type="Area2D" parent="TrashRef"]
-
-[node name="Trash" type="HBoxContainer" parent="TrashRef/Body"]
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
+color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
-[node name="Collision" type="CollisionShape2D" parent="TrashRef/Body"]
-position = Vector2(73, 102)
-shape = SubResource("RectangleShape2D_pi5ge")
-
-[node name="FieldRef" type="ColorRect" parent="."]
+[node name="FieldRef" type="ReferenceRect" parent="."]
 custom_minimum_size = Vector2(150, 200)
-anchors_preset = 14
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 368.0
-offset_top = 376.0
-offset_right = 518.0
-offset_bottom = 576.0
+anchor_bottom = 1.0
+offset_left = 63.0
+offset_top = 539.0
+offset_right = 586.0
+offset_bottom = 796.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.214103, 0.214103, 0.214103, 1)
-script = ExtResource("2_yl3le")
+border_color = Color(0, 1, 1, 1)
+border_width = 2.0
+editor_only = false
 
 [node name="Body" type="Area2D" parent="FieldRef"]
 
 [node name="Collision" type="CollisionShape2D" parent="FieldRef/Body"]
-position = Vector2(77, 100.5)
+visible = false
+position = Vector2(225.5, 108)
 shape = SubResource("RectangleShape2D_nbewe")
 
 [node name="Field" type="HBoxContainer" parent="FieldRef" groups=["Fields"]]
@@ -78,21 +85,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
+metadata/_edit_lock_ = true
 
-[node name="HandRef" type="ColorRect" parent="."]
+[node name="CpuFieldRef" type="ReferenceRect" parent="."]
+custom_minimum_size = Vector2(150, 200)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 63.0
+offset_top = 172.0
+offset_right = 586.0
+offset_bottom = 429.0
+grow_horizontal = 2
+grow_vertical = 2
+border_color = Color(1, 0, 1, 1)
+border_width = 2.0
+editor_only = false
+
+[node name="Field" type="HBoxContainer" parent="CpuFieldRef" groups=["Fields"]]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="HandRef" type="ReferenceRect" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_top = 896.0
-offset_right = 649.0
+offset_right = 646.0
 offset_bottom = 1152.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-color = Color(0, 0, 0, 1)
 
 [node name="Hand" type="HBoxContainer" parent="HandRef" groups=["Fields"]]
 layout_mode = 1
@@ -103,19 +135,59 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
+[node name="PlayerScore" type="RichTextLabel" parent="."]
+offset_left = 63.0
+offset_top = 46.0
+offset_right = 172.0
+offset_bottom = 125.0
+theme_override_colors/default_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Player"
+
+[node name="Display" type="RichTextLabel" parent="PlayerScore"]
+offset_top = 32.0
+offset_right = 101.0
+offset_bottom = 71.0
+bbcode_enabled = true
+text = "[center]10"
+
+[node name="CpuScore" type="RichTextLabel" parent="."]
+offset_left = 476.0
+offset_top = 46.0
+offset_right = 585.0
+offset_bottom = 135.0
+theme_override_colors/default_color = Color(1, 0, 1, 1)
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]CPU"
+
+[node name="Display" type="RichTextLabel" parent="CpuScore"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 109.0
+offset_bottom = 72.0
+bbcode_enabled = true
+text = "[center]10"
+
+[node name="ResultDisplay" type="RichTextLabel" parent="."]
+offset_top = 469.0
+offset_right = 647.0
+offset_bottom = 518.0
+bbcode_enabled = true
+text = "[center]stuff"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ResultDisplay"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_8h3c7")
+}
+
 [connection signal="ready" from="." to="." method="_on_ready"]
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
-[connection signal="gui_input" from="TrashRef" to="." method="_on_trash_ref_gui_input"]
-[connection signal="mouse_entered" from="TrashRef" to="TrashRef" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="TrashRef" to="TrashRef" method="_on_mouse_exited"]
-[connection signal="area_shape_entered" from="TrashRef/Body" to="." method="_on_body_area_shape_entered"]
-[connection signal="area_shape_exited" from="TrashRef/Body" to="." method="_on_body_area_shape_exited"]
-[connection signal="body_entered" from="TrashRef/Body" to="." method="_on_body_body_entered"]
-[connection signal="body_exited" from="TrashRef/Body" to="." method="_on_body_body_exited"]
 [connection signal="gui_input" from="FieldRef" to="." method="_on_field_ref_gui_input"]
-[connection signal="mouse_entered" from="FieldRef" to="FieldRef" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="FieldRef" to="FieldRef" method="_on_mouse_exited"]
 [connection signal="area_shape_entered" from="FieldRef/Body" to="." method="_on_field_shape_entered"]
 [connection signal="area_shape_exited" from="FieldRef/Body" to="." method="_on_field_shape_exited"]
 [connection signal="child_entered_tree" from="FieldRef/Field" to="." method="_on_field_child_entered_tree"]
 [connection signal="child_exiting_tree" from="FieldRef/Field" to="." method="_on_field_child_exiting_tree"]
+[connection signal="child_entered_tree" from="CpuFieldRef/Field" to="." method="_on_field_child_entered_tree"]
+[connection signal="child_exiting_tree" from="CpuFieldRef/Field" to="." method="_on_field_child_exiting_tree"]
