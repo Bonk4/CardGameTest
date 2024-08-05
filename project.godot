@@ -25,6 +25,13 @@ window/size/viewport_width=648
 window/size/viewport_height=1152
 window/stretch/mode="viewport"
 
+[gui]
+
+theme/custom_font="res://assets/SourceCodePro-VariableFont_wght.ttf"
+theme/default_font_antialiasing=2
+theme/default_font_hinting=2
+
 [rendering]
 
 renderer/rendering_method="mobile"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

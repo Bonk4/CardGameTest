@@ -86,8 +86,31 @@ func getCard():
 
 func setCardDisplay():
 	$Body/CardFront/Rank.text = rank;
-	$Body/CardFront/Suit.text = suit;
+	$Body/CardFront/Suit.frame = getFrame(suit);
+	$Body/CardFront/SuitTxt.text = getCode(suit);
 
 func showGhost(show):
 	$Body/CardFront.visible = !show;
 	$Body/GhostFront.visible = show;
+	
+func getFrame(suit):
+	match suit:
+		"clubs":
+			return 0;
+		"hearts":
+			return 1;
+		"diamonds":
+			return 2;
+		"spades":
+			return 3;
+	
+func getCode(suit):
+	match suit:
+		"clubs":
+			return "\u2667";
+		"hearts":
+			return "\u2665";
+		"diamonds":
+			return "\u2666";
+		"spades":
+			return "\u2664";
