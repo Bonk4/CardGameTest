@@ -1,0 +1,17 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1722824824
+board.gd::GDScript::-1::1722822372::0::1::::<>Node2D<>::
+board.tscn::PackedScene::4955611993302336180::1722824140::0::1::::<><>::res://board.gd<>res://Field.gd
+Card.gd::GDScript::-1::1722821835::0::1::::<>Container<>::
+CardBase.tscn::PackedScene::3591622771552679198::1722824805::0::1::::<><>::res://Card.gd<>uid://43vvtnwqb1qx::::res://assets/ghost_card.png<>uid://d2nxcea7fbsj8::::res://assets/card_template.png
+Field.gd::GDScript::-1::1722808344::0::1::::<>ColorRect<>::
+icon.svg::CompressedTexture2D::7076994205827360170::1722808344::1722808620::1::::<><>::
+::res://assets/::1722824824
+card_template.png::CompressedTexture2D::9082598014084469363::1722808344::1722808620::1::::<><>::
+clubs.png::CompressedTexture2D::7686511365038316455::1722824373::1722824819::1::::<><>::
+diamonds.png::CompressedTexture2D::5049090463278886429::1722824364::1722824450::1::::<><>::
+ghost_card.png::CompressedTexture2D::2094592620183852199::1722808344::1722808620::1::::<><>::
+hearts.png::CompressedTexture2D::665941776875264788::1722824347::1722824450::1::::<><>::
+spades.png::CompressedTexture2D::5913183533491009949::1722824379::1722824824::1::::<><>::
+::res://global/::1722822032
+game.gd::GDScript::-1::1722822032::0::1::::<>Node<>::

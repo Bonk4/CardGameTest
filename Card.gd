@@ -18,13 +18,12 @@ var ranks = [
 ];
 
 @export var held = false;
+@export var ghost = false;
 
 @export_category("card-data")
 @export var rank = "2";
 @export var suit = "heart";
 @export var score = 2;
-
-var selected = false;
 
 func _on_ready():
 	ranks.shuffle();
@@ -38,46 +37,45 @@ func _on_ready():
 	score = newRank.value;
 	setCardDisplay();
 
-func _on_gui_input(event):
-	if (event is InputEventMouseButton && event.button_index == 1):
-		if(!held):
-			var copy = getCard();
-			print(copy);
-			Game.dragCard(copy);
-			showGhost(true);
-	if (event is InputEventMouseButton && event.button_index == 0):
-		print("let go of mouse");
-		if(held):
-			queue_free();
-
 func _process(delta):
 	if(held):
-		var height_offset = $CardFront.texture.get_size().y / 2;
-		var width_offset = $CardFront.texture.get_size().x / 2;
+		var height_offset = $Body/CardFront.texture.get_size().y / 2;
+		var width_offset = $Body/CardFront.texture.get_size().x / 2;
 		
-		var mousePos = get_global_mouse_position();
+		var mouse = get_global_mouse_position()
+		var towardsMouse = global_position.angle_to(mouse) * -1
+		rotation = lerp_angle(rotation, towardsMouse, 10 * delta)
+		
 		var newPos = Vector2(
-			mousePos.x - width_offset, 
-			mousePos.y - width_offset
+			mouse.x - width_offset, 
+			mouse.y - width_offset
 		);
-		self.global_position = newPos;
+		global_position = lerp(global_position, newPos, 10 * delta);
+
+func _on_gui_input(event):
+	if (event is InputEventMouseButton && event.pressed):
+		if(!held):
+			held = true;
+	if (event is InputEventMouseButton && !event.pressed):
+		print("checkDestination")
+		Game.checkDestination(self);
+		held = false;
 
 func _on_mouse_entered():
-	$Anim.play("select");
-
+	if(!Game.cardHeld):
+		$Body/Anim.play("select");
 
 func _on_mouse_exited():
-	$Anim.play("deselect");
+	if(!Game.cardHeld):
+		$Body/Anim.play("deselect");
 
 
 func setCard(newCard):
+	print("setCard");
 	suit = newCard.suit;
 	rank = newCard.rank;
 	score = newCard.score;
 	setCardDisplay();
-
-func setDrag(drag):
-	held = drag;
 	
 func getCard():
 	return { 
@@ -87,9 +85,9 @@ func getCard():
 	};
 
 func setCardDisplay():
-	$CardFront/Rank.text = rank;
-	$CardFront/Suit.text = suit;
+	$Body/CardFront/Rank.text = rank;
+	$Body/CardFront/Suit.text = suit;
 
 func showGhost(show):
-	$CardFront.visible = !show;
-	$GhostFront.visible = show;
+	$Body/CardFront.visible = !show;
+	$Body/GhostFront.visible = show;

@@ -1,36 +1,52 @@
 [gd_scene load_steps=5 format=3 uid="uid://ccusg8tgxly5q"]
 
 [ext_resource type="Script" path="res://board.gd" id="1_5fsv0"]
-[ext_resource type="PackedScene" uid="uid://brf2rcwuan4ra" path="res://CardBase.tscn" id="1_hnwej"]
 [ext_resource type="Script" path="res://Field.gd" id="2_yl3le"]
-[ext_resource type="Script" path="res://Trash.gd" id="4_8xx2v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pi5ge"]
+size = Vector2(116, 170)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nbewe"]
+size = Vector2(128, 177)
 
 [node name="Board" type="Node2D"]
 script = ExtResource("1_5fsv0")
 
-[node name="HandRef" type="ColorRect" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_top = 896.0
-offset_right = 640.0
-offset_bottom = 1152.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-color = Color(0.259294, 0.259294, 0.259294, 1)
+[node name="Button" type="Button" parent="."]
+offset_left = 272.0
+offset_top = 672.0
+offset_right = 368.0
+offset_bottom = 727.0
+theme_override_font_sizes/font_size = 34
+text = "Draw"
 
-[node name="Hand" type="HBoxContainer" parent="HandRef"]
-layout_mode = 1
+[node name="TrashRef" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(150, 200)
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 120.0
+offset_top = 376.0
+offset_right = 270.0
+offset_bottom = 576.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.37362, 0.117808, 0.0543879, 1)
+
+[node name="Body" type="Area2D" parent="TrashRef"]
+
+[node name="Trash" type="HBoxContainer" parent="TrashRef/Body"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
+
+[node name="Collision" type="CollisionShape2D" parent="TrashRef/Body"]
+position = Vector2(73, 102)
+shape = SubResource("RectangleShape2D_pi5ge")
 
 [node name="FieldRef" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(150, 200)
@@ -47,7 +63,13 @@ grow_vertical = 2
 color = Color(0.214103, 0.214103, 0.214103, 1)
 script = ExtResource("2_yl3le")
 
-[node name="Field" type="HBoxContainer" parent="FieldRef"]
+[node name="Body" type="Area2D" parent="FieldRef"]
+
+[node name="Collision" type="CollisionShape2D" parent="FieldRef/Body"]
+position = Vector2(77, 100.5)
+shape = SubResource("RectangleShape2D_nbewe")
+
+[node name="Field" type="HBoxContainer" parent="FieldRef" groups=["Fields"]]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,25 +78,22 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="CardContainer" parent="FieldRef/Field" instance=ExtResource("1_hnwej")]
-layout_mode = 2
-
-[node name="TrashRef" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(150, 200)
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 120.0
-offset_top = 376.0
-offset_right = 270.0
-offset_bottom = 576.0
+[node name="HandRef" type="ColorRect" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_top = 896.0
+offset_right = 640.0
+offset_bottom = 1152.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.37362, 0.117808, 0.0543879, 1)
-script = ExtResource("4_8xx2v")
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(0.259294, 0.259294, 0.259294, 1)
 
-[node name="Trash" type="HBoxContainer" parent="TrashRef"]
+[node name="Hand" type="HBoxContainer" parent="HandRef" groups=["Fields"]]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -82,18 +101,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
-
-[node name="Button" type="Button" parent="."]
-offset_left = 272.0
-offset_top = 672.0
-offset_right = 368.0
-offset_bottom = 727.0
-theme_override_font_sizes/font_size = 34
-text = "Draw"
 
 [connection signal="ready" from="." to="." method="_on_ready"]
-[connection signal="mouse_entered" from="FieldRef" to="FieldRef" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="FieldRef" to="FieldRef" method="_on_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="gui_input" from="TrashRef" to="." method="_on_trash_ref_gui_input"]
 [connection signal="mouse_entered" from="TrashRef" to="TrashRef" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="TrashRef" to="TrashRef" method="_on_mouse_exited"]
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="area_shape_entered" from="TrashRef/Body" to="." method="_on_body_area_shape_entered"]
+[connection signal="area_shape_exited" from="TrashRef/Body" to="." method="_on_body_area_shape_exited"]
+[connection signal="body_entered" from="TrashRef/Body" to="." method="_on_body_body_entered"]
+[connection signal="body_exited" from="TrashRef/Body" to="." method="_on_body_body_exited"]
+[connection signal="gui_input" from="FieldRef" to="." method="_on_field_ref_gui_input"]
+[connection signal="mouse_entered" from="FieldRef" to="FieldRef" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="FieldRef" to="FieldRef" method="_on_mouse_exited"]
+[connection signal="area_shape_entered" from="FieldRef/Body" to="." method="_on_field_shape_entered"]
+[connection signal="area_shape_exited" from="FieldRef/Body" to="." method="_on_field_shape_exited"]
+[connection signal="child_entered_tree" from="FieldRef/Field" to="." method="_on_field_child_entered_tree"]
+[connection signal="child_exiting_tree" from="FieldRef/Field" to="." method="_on_field_child_exiting_tree"]
